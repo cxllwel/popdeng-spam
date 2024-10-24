@@ -12,8 +12,9 @@ function jwtSign(payload, secret) {
 fetch("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js").then(r=>r.text()).then(eval).then(function(){
     localStorage.setItem("_d", jwtSign({"click":999_999_999_999,"iat":parseInt(Date.now()/10000),"By":"Larinax999"}, "Please, don\"t share me."));
     console.log("Done");
+	location.reload();
 });
 
 /* get ur countryCode
-self.__next_f[7][1].split('{"countryCode":"')[1].split('","initLeaderboard"')[0]
+self.__next_f[7][1].split('{"countryCode":"')[1].split('"')[0]
 */

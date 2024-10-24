@@ -2,38 +2,54 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/valyala/fasthttp"
 )
 
 const (
-	charset = "abcdefghijklmnopqrstuvwxyz0123456789"
-	Delay   = 10 * time.Minute // session time for 1 connection
+	charset   = "abcdefghijklmnopqrstuvwxyz0123456789"
+	UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+	Delay     = 10 * time.Minute // session time for 1 connection
 )
 
-var (
-	r = rand.New(rand.NewSource(time.Now().UnixNano()))
-)
-
-func randomString(length int) string {
-	result := make([]byte, length)
-	for i := range result {
-		result[i] = charset[r.Intn(len(charset))]
+func extractValue(response string, key string) string { // thanks claude.ai
+	startKey := `\"` + key + `\":\"`
+	start := strings.Index(response, startKey) + len(startKey)
+	if start < len(startKey) {
+		return ""
 	}
-	return string(result)
+	end := strings.Index(response[start:], `\"`) + start
+	if end < start {
+		return ""
+	}
+	return response[start:end]
 }
 
 func createClientOptions() *mqtt.ClientOptions {
 	opts := mqtt.NewClientOptions()
-	opts.AddBroker("wss://o.popdeng.click:443/mqtt")
+	req := fasthttp.AcquireRequest()
+	req.SetRequestURI("https://popdeng.click/")
+	req.Header.SetUserAgent(UserAgent)
+	resp := fasthttp.AcquireResponse()
+	if fasthttp.Do(req, resp) != nil {
+		fmt.Println("Get info fail")
+		return nil
+	}
+	fasthttp.ReleaseRequest(req)
+	defer fasthttp.ReleaseResponse(resp)
+	body := string(resp.Body())
+	opts.AddBroker(extractValue(body, "host"))
 	opts.SetHTTPHeaders(http.Header{
 		"origin":     {"https://popdeng.click"},
-		"user-agent": {"Mozilla/5.0"},
+		"user-agent": {UserAgent},
 	})
-	opts.SetClientID(fmt.Sprintf("popdeng0.%s", randomString(13)))
+	opts.SetUsername(extractValue(body, "user"))
+	opts.SetPassword(extractValue(body, "token"))
+	opts.SetClientID(extractValue(body, "clientId"))
 	opts.SetCleanSession(true)
 	opts.SetDefaultPublishHandler(func(client mqtt.Client, msg mqtt.Message) {
 		fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
@@ -49,7 +65,12 @@ func createClientOptions() *mqtt.ClientOptions {
 
 func Connect() {
 	for {
-		client := mqtt.NewClient(createClientOptions())
+		opts := createClientOptions()
+		if opts == nil {
+			time.Sleep(time.Second * 2)
+			continue
+		}
+		client := mqtt.NewClient(opts)
 		if token := client.Connect(); token.Wait() && token.Error() != nil {
 			fmt.Println("Connect Fail", token.Error())
 			time.Sleep(time.Second)
@@ -72,7 +93,7 @@ func Connect() {
 }
 
 func main() {
-	for i := 0; i < 50; i++ {
+	for i := 0; i < 500; i++ {
 		go Connect()
 		time.Sleep(time.Millisecond * 25)
 	}
