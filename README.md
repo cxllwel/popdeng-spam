@@ -3,8 +3,8 @@
 mqtt spammer (full api NO chromium), send fake score to everyone, fake click
 
 # performance of spammer/clicker 🔥
-**over 12000 cps++ with 550 thread** and crash hivemq server with 200 threads 😎
-![performance of spammer](https://github.com/user-attachments/assets/6ce4c103-72f8-4781-b9d1-3f1006bba83a)
+**over 20000 cps++ with 500 thread** and crash hivemq server with only 200 threads 😎
+![performance of spamme](https://github.com/user-attachments/assets/4723270a-b0f9-4d83-841b-6718cd7932ad)
 
 # hijack leaderboard
 **everyone see this cool right?**
