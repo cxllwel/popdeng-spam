@@ -89,7 +89,7 @@ func Connect() {
 		client.Subscribe("popdeng/clicks", 1, nil)
 		quitT := time.Now().Add(Delay)
 		for time.Now().Before(quitT) {
-			for i := 0; i < 20; i++ { // Publish 1000 times
+			for i := 0; i < 10; i++ { // Publish 1000 times
 				token := client.Publish("popdeng/clicks", 0, false, `OZKLKWVMTGVHG8CCC!.8vrr`)
 				if token.Wait() && token.Error() != nil {
 					fmt.Println("send click error", token.Error())
@@ -105,7 +105,7 @@ func Connect() {
 }
 
 func main() {
-	for i := 0; i < 30; i++ {
+	for i := 0; i < 200; i++ {
 		go Connect()
 		time.Sleep(time.Millisecond * 25)
 	}
