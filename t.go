@@ -107,7 +107,7 @@ func Connect() {
 
 func main() {
 	// Run the MQTT connections
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 15; i++ {
 		go Connect()
 		time.Sleep(time.Millisecond * 25)
 	}
