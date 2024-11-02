@@ -87,7 +87,7 @@ func Connect() {
 			continue
 		}
 
-		client.Subscribe("popdeng/clicks", 1, nil)
+		client.Subscribe("popdeng/clicks", 0, nil)
 		quitT := time.Now().Add(Delay)
 		for time.Now().Before(quitT) {
 			for i := 0; i < 10; i++ { // Publish 1000 times
