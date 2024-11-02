@@ -8,12 +8,13 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/valyala/fasthttp"
+	"os"
 )
 
 const (
 	charset   = "abcdefghijklmnopqrstuvwxyz0123456789"
 	UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
-	Delay  = 2 * time.Minute // session time for 1 connection
+	Delay     = 2 * time.Minute // session time for 1 connection
 )
 
 func extractValue(response string, key string) string {
@@ -105,9 +106,28 @@ func Connect() {
 }
 
 func main() {
-	for i := 0; i < 200; i++ {
+	// Run the MQTT connections
+	for i := 0; i < 100; i++ {
 		go Connect()
 		time.Sleep(time.Millisecond * 25)
 	}
-	select {}
+
+	// Set up HTTP server
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000" // Default port
+	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "Server is running")
+	})
+
+	go func() {
+		fmt.Printf("Server is listening on port %s\n", port)
+		if err := http.ListenAndServe(":"+port, nil); err != nil {
+			fmt.Println("Error starting server:", err)
+		}
+	}()
+
+	select {} // Keep the main goroutine running
 }
