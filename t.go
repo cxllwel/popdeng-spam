@@ -91,7 +91,7 @@ func Connect() {
 		quitT := time.Now().Add(Delay)
 		for time.Now().Before(quitT) {
 			for i := 0; i < 3; i++ { // Publish 1000 times
-				token := client.Publish("popdeng/clicks", 0, false, `OZKLKWVMTGVHG8CCC!.8vrr`)
+				token := client.Publish("popdeng/clicks", 1, false, `OZKLKWVMTGVHG8CCC!.8vrr`)
 				if token.Wait() && token.Error() != nil {
 					fmt.Println("send click error", token.Error())
 					break
