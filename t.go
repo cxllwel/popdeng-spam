@@ -90,8 +90,8 @@ func Connect() {
 		client.Subscribe("popdeng/clicks", 1, nil)
 		quitT := time.Now().Add(Delay)
 		for time.Now().Before(quitT) {
-			for i := 0; i < 3; i++ { // Publish 1000 times
-				token := client.Publish("popdeng/clicks", 1, false, `OZKLKWVMTGVHG8CCC!.8vrr`)
+			for i := 0; i < 10; i++ { // Publish 1000 times
+				token := client.Publish("popdeng/clicks", 1, false, `GDKLKWVMTGVHG8CCC!.85az`)
 				if token.Wait() && token.Error() != nil {
 					fmt.Println("send click error", token.Error())
 					break
@@ -107,7 +107,7 @@ func Connect() {
 
 func main() {
 	// Run the MQTT connections
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 10; i++ {
 		go Connect()
 		time.Sleep(time.Millisecond * 25)
 	}
