@@ -32,7 +32,7 @@ func extractValue(response string, key string) string { // thanks claude.ai
 func createClientOptions() *mqtt.ClientOptions {
 	opts := mqtt.NewClientOptions()
 	req := fasthttp.AcquireRequest()
-	req.SetRequestURI("https://popdeng.click/")
+	req.SetRequestURI("https://www.popdeng.click/")
 	req.Header.SetUserAgent(UserAgent)
 	resp := fasthttp.AcquireResponse()
 	if fasthttp.Do(req, resp) != nil {
@@ -44,7 +44,7 @@ func createClientOptions() *mqtt.ClientOptions {
 	body := string(resp.Body())
 	opts.AddBroker(extractValue(body, "host"))
 	opts.SetHTTPHeaders(http.Header{
-		"origin":     {"https://popdeng.click"},
+		"origin":     {"https://www.popdeng.click"},
 		"user-agent": {UserAgent},
 	})
 	opts.SetUsername(extractValue(body, "user"))
@@ -93,7 +93,7 @@ func Connect() {
 }
 
 func main() {
-	for i := 0; i < 500; i++ {
+	for i := 0; i < 200; i++ {
 		go Connect()
 		time.Sleep(time.Millisecond * 25)
 	}
