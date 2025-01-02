@@ -93,7 +93,7 @@ func Connect() {
 }
 
 func main() {
-	for i := 0; i < 50; i++ {
+	for i := 0; i < 65; i++ {
 		go Connect()
 		time.Sleep(time.Millisecond * 25)
 	}
