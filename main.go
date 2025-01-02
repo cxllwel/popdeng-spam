@@ -13,7 +13,7 @@ import (
 const (
 	charset   = "abcdefghijklmnopqrstuvwxyz0123456789"
 	UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
-	Delay     = 10 * time.Minute // session time for 1 connection
+	Delay     = 35 * time.Second // session time for 1 connection
 )
 
 func extractValue(response string, key string) string { // thanks claude.ai
@@ -93,7 +93,7 @@ func Connect() {
 }
 
 func main() {
-	for i := 0; i < 200; i++ {
+	for i := 0; i < 50; i++ {
 		go Connect()
 		time.Sleep(time.Millisecond * 25)
 	}
